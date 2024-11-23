@@ -27,7 +27,12 @@ const ESTADO_LETRA_PERTENECE = "pertenece";
 /**************************************/
 
 /**
- *  ****COMPLETAR*****
+ *  La función recibe un número ingresado por el usuario y verifica que esté dentro 
+ * del rango marcado por los parámetros $min y $max. Si el número ingresado no es válido,
+ * solicita nuevamente el número hasta que se ingrese uno válido.
+ * @param int $min
+ * @param int $max
+ * @return $numero
  */
 function solicitarNumeroEntre($min, $max)
 {
@@ -119,8 +124,10 @@ function escribirSegunEstado($texto, $estado)
     }
 }
 
-/**
- * ****COMPLETAR*****
+/** 
+ * Esta función imprime un mensaje de bienvenida con el nombre del usuario.
+ * El nombre del usuario figurará en amarillo
+ * @param string $usuario
  */
 function escribirMensajeBienvenida($usuario)
 {
