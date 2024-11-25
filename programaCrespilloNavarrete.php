@@ -329,6 +329,7 @@ function mostrarPartidasOrdenadas($coleccionPartidas) {
 //Inicialización de variables:
 $almacenarPartidas = [];
 $partidasJugadas = cargarPartidas();
+$coleccionPalabras = cargarColeccionPalabras();
 
 //Proceso:
 do{ 
