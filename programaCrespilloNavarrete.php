@@ -60,33 +60,35 @@ function seleccionarOpcion(){
  * @param array $partidaJugada
  * @return array 
 */
-function cargarPartidas ($partidaJugada){
+function cargarPartidas ($partidaJugada = null){
     //array $partida
     //STRING $jugadorActual
     //array $arrayPartidasJugadas
-    $partida = $partidaJugada;
-    $jugadorActual =  $partida["jugador"];
-    $arrayPartidasJugadas = [];
-    
-    if (!$arrayPartidasJugadas[$jugadorActual]){
-        $arrayPartidasJugadas[$jugadorActual] = [
-            "partidas" => [
-                [
-                    "jugador" => $jugadorActual,
-                    "intentos" => $partida["intentos"],
-                    "palabra" => $partida["palabra"],
-                    "puntaje" => $partida["puntaje"]
+    static $arrayPartidasJugadas = [];
+
+    if($partidaJugada !== null){
+        $partida = $partidaJugada;
+        $jugadorActual = $partida["jugador"];
+        if (!$arrayPartidasJugadas[$jugadorActual]){
+            $arrayPartidasJugadas[$jugadorActual] = [
+                "partidas" => [
+                    [
+                        "jugador" => $jugadorActual,
+                        "intentos" => $partida["intentos"],
+                        "palabra" => $partida["palabraWordix"],
+                        "puntaje" => $partida["puntaje"]
+                    ]
                 ]
-            ]
-        ];
-    } else {
-        $partidaActual = count($arrayPartidasJugadas[$jugadorActual]["partidas"]);
-        $arrayPartidasJugadas[$jugadorActual]["partidas"][$partidaActual + 1] = [
-            "jugador" => $jugadorActual,
-            "intentos" => $partida["intentos"],
-            "palabra" => $partida["palabra"],
-            "puntaje" => $partida["puntaje"]
-        ];
+            ];
+        } else {
+            $partidaActual = count($arrayPartidasJugadas[$jugadorActual]["partidas"]);
+            $arrayPartidasJugadas[$jugadorActual]["partidas"][$partidaActual] = [
+                "jugador" => $jugadorActual,
+                "intentos" => $partida["intentos"],
+                "palabra" => $partida["palabra"],
+                "puntaje" => $partida["puntaje"]
+            ];
+        }
     }
     return $arrayPartidasJugadas;
     }
@@ -135,6 +137,7 @@ function compararPartidas ($a,$b){
 
 //Inicialización de variables:
 $almacenarPartidas = [];
+$partidasJugadas = cargarPartidas();
 
 //Proceso:
 do{ 
@@ -164,14 +167,15 @@ do{
             $jugador = trim(fgets(STDIN));
             $coleccionPalabras = cargarColeccionPalabras();
             $palabraAleatoria = "";
-            do {
-                $palabraAleatoria = $coleccionPalabras[array_rand($coleccionPalabras)];
+            do { 
+                $aleatoria = array_rand($coleccionPalabras);
+                $palabraAleatoria = $coleccionPalabras[$aleatoria];
             } while (verificarNoRepetirPalabra($jugador, $palabraAleatoria, $PartidasJugadas));
             $partida = jugarWordix($palabraAleatoria, $jugador);
             $almacenarPartidas = cargarPartidas($partida);
             break;
         case 3: 
-            $partidasJugadas = cargarPartidas($partida);
+            $partidasJugadas = cargarPartidas();
             $cantPartidas = count($partidasJugadas) - 1;
             echo "Ingrese el número de partida (1-" . $cantPartidas . "): ";
             $numeroPartida = trim(fgets(STDIN));
@@ -191,12 +195,14 @@ do{
     }
             break;
         case 4: 
+            $partidasJugadas = cargarPartidas();
             echo "Ingrese el nombre del jugador: ";
             $jugador = trim(fgets(STDIN));
             $encontrado = false;
             $partidaGanada = [];
             $i = 0;
-            while ($i < count($partidasJugadas) && !$encontrada) {
+            $cantPartidasJugadas = count($partidasJugadas);
+            while ($i < $cantPartidasJugadas && !$encontrado) {
                 if ($partidasJugadas[$i]["jugador"] == $jugador && $partidasJugadas[$i]["intentos"] > 0) {
                     $partidaGanada = $partidasJugadas[$i];
                     $encontrada = true;
@@ -214,13 +220,14 @@ do{
             }
             break;
         case 5:
+            $partidasJugadas = cargarPartidas();
             echo "Ingrese el nombre del jugador: ";
             $jugador = trim(fgets(STDIN));
             
             $partidasJugadasJugador = [];
             $cantPartidasJugadas = count($partidasJugadas);
             $i = 0;
-            while( $i < $partidasJugadas){
+            while( $i < $cantPartidasJugadas){
                 if( $partidasJugadas [$i]["jugador"]== $jugador){
                     $partidasJugadasJugador[] = $partidasJugadas[$i];
                 }
@@ -260,7 +267,7 @@ do{
             }
             break;
         case 6:
-            $partidasJugadas = cargarPartidas($partida);
+            $partidasJugadas = cargarPartidas();
             uasort($partidasJugadas, "compararPartidas");
             echo "Listado de partidas ordenadas por jugador y por palabra:\n";
             print_r($partidasJugadas);
@@ -279,3 +286,4 @@ do{
             break;        
     }
 }while ($opcion != 8);
+?>
