@@ -305,6 +305,25 @@ function mostrarPartidasOrdenadas($coleccionPartidas) {
 /**************************************/
 
 //Declaración de variables:
+/**
+ * STRING $jugador
+ * STRING $palabraAleatoria
+ * STRING $aleatoria
+ * INT $opcion
+ * INT $posiconPalabra
+ * INT $cantPartidas
+ * INT $numeroPartida
+ * INT $indiceGanada
+ * BOOL $palabraValida
+ * array $palabraElegida
+ * array $coleccionPalabras
+ * array $partida
+ * array $partidaGanada
+ * array $almacenarPartidas
+ * array $partidasJugadas
+ * array $resumen
+ * BOOL $partidaValida
+ */
 
 
 //Inicialización de variables:
@@ -396,7 +415,7 @@ do{
             break;
         case 7:
             $coleccionPalabras = cargarColeccionPalabras();
-            $colecciónPalabras = agregarPalabras($coleccionPalabras);
+            $coleccionPalabras = agregarPalabras($coleccionPalabras);
             echo "Tu palabra ah sido agregada.";
             break;
         case 8:
