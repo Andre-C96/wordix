@@ -48,7 +48,7 @@ function cargarColeccionPalabras()
  */
 function seleccionarOpcion(){
     //INT $opcion
-    echo "Menú de opciones:\n";
+    echo "\n Menú de opciones:\n";
     echo "1) Jugar al wordix con una palabra elegida\n";
     echo "2) Jugar al wordix con una palabra aleatoria\n";
     echo "3) Mostrar una partida\n";
@@ -61,8 +61,6 @@ function seleccionarOpcion(){
     $opcion = solicitarNumeroEntre(1,8);
     return $opcion;
 }
-
-
 
 
 /** Esta función almacena las partidas realizadas 
@@ -79,7 +77,7 @@ function cargarPartidas ($partidaJugada = null){
     if($partidaJugada !== null){
         $partida = $partidaJugada;
         $jugadorActual = $partida["jugador"];
-        if (!$arrayPartidasJugadas[$jugadorActual]){
+        if (!isset($arrayPartidasJugadas[$jugadorActual])){
             $arrayPartidasJugadas[$jugadorActual] = [
                 "partidas" => [
                     [
@@ -94,9 +92,9 @@ function cargarPartidas ($partidaJugada = null){
             $partidaActual = count($arrayPartidasJugadas[$jugadorActual]["partidas"]);
             $arrayPartidasJugadas[$jugadorActual]["partidas"][$partidaActual] = [
                 "jugador" => $jugadorActual,
-                "intentos" => $partida["intentos"],
-                "palabra" => $partida["palabra"],
-                "puntaje" => $partida["puntaje"]
+                "intentos" => ($partida["intentos"]),
+                "palabra" => ($partida["palabraWordix"]),
+                "puntaje" => ($partida["puntaje"])
             ];
         }
     }
@@ -115,7 +113,7 @@ function verificarNoRepetirPalabra ($jugador, $palabraAJugar, $partidasJugadas){
     //INT $canPartidas
     //INT $i
     $encontrado = false;
-    if (($partidasJugadas[$jugador])) {
+    if (isset($partidasJugadas[$jugador])) {
         $i = 0; 
         $cantPartidas = count($partidasJugadas[$jugador]["partidas"]);
         while ($i < $cantPartidas && !$encontrado) {
@@ -184,7 +182,7 @@ function primeraPartidaGanada($coleccionPartidas, $nombreJugador) {
     $posicion = -1;
     while ($i < $cantPartidas) {
         $partida = $coleccionPartidas[$i];
-        if ($partida["jugador"] === $nombreJugador && $partida["intentos"] > 0) {
+        if ($partida["jugador"] == $nombreJugador && $partida["intentos"] > 0) {
             $posicion = $i;
         }
         $i++;
@@ -237,7 +235,14 @@ function obtenerResumenJugador($coleccionPartidas, $nombreJugador) {
         }
         $j++;
     }
-    $porcentajeVictorias = (($victorias*100)/ $cantPartidasJugador);
+    if ($cantPartidasJugador > 0){
+        $porcentajeVictorias = (($victorias*100)/ $cantPartidasJugador);
+    }
+    else{ 
+        $porcentajeVictorias = 0;
+    }
+    
+
     $resumenJugador = [
         "jugador" => $nombreJugador,
         "partidas" => $cantPartidasJugador,
@@ -342,8 +347,9 @@ do{
             echo "Ingresa tu nombre: ";
             $jugador = trim(fgets(STDIN));
             while (!$palabraValida) {
-                echo "Seleccione su palabra de juego ingresando un número del 1 al 15: ";
-                $posicionPalabra = solicitarNumeroEntre(1,15);
+                $cantPalabras = count($coleccionPalabras);
+                echo "Seleccione su palabra de juego ingresando un número del 1 al " . $cantPalabras. ": ";
+                $posicionPalabra = solicitarNumeroEntre(1,$cantPalabras);
                 $palabraElegida = $coleccionPalabras[$posicionPalabra];
                 if (verificarNoRepetirPalabra($jugador, $palabraElegida, $partidasJugadas)) {
                     echo "La palabra ya fue utilizada por este jugador." . "\n\"";

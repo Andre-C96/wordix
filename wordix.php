@@ -398,6 +398,7 @@ function obtenerPuntajeWordix($estructuraIntentosWordix){
     $puntaje += $puntajeIntentos;
     return $puntaje;
 }
+}
 
 
 /**
@@ -447,5 +448,5 @@ function jugarWordix($palabraWordix, $nombreUsuario){
 
     return $partida;
 }
-}
+
 ?>
