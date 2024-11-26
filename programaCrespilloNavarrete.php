@@ -235,35 +235,15 @@ function obtenerResumenJugador($coleccionPartidas, $nombreJugador) {
     //INT $indiceIntento
     //FLOAT $porcentajeVictorias
     //array $resumenJugador
-    $partidasJugadasJugador = [];
-    $cantPartidas = count($coleccionPartidas);
-    $indicePartidas = array_keys($coleccionPartidas);
-    $i = 0;
-    while ($i < $cantPartidas) {
-        $clavePartida = $indicePartidas[$i];
-        $partida = $coleccionPartidas[$clavePartida];
-        if (($partida["partidas"])) {
-            $cantPartidasJugador = count($partida["partidas"]);
-            $j = 0;
-            while ($j < $cantPartidasJugador) {
-                $partidaIndividual = $partida["partidas"][$j];
-                if ($partidaIndividual["jugador"] == $nombreJugador) {
-                    $partidasJugadasJugador[] = $partidaIndividual;
-                }
-                $j++;
-            }
-        }
-        $i++;
-    }
+    $partidasJugadasJugador = $coleccionPartidas[$nombreJugador]["partidas"];
     $puntajeTotal = 0;
     $victorias = 0;
     $adivinadas = [0, 0, 0, 0, 0, 0]; 
     $cantPartidasJugador = count($partidasJugadasJugador);
-    $j = 0;
-    while ($j < $cantPartidasJugador) {
+    for ($j = 0; $j < $cantPartidasJugador; $j++) {
         $partida = $partidasJugadasJugador[$j];
         $puntajeTotal += $partida["puntaje"];
-        if ($partida["intentos"] > 0) {
+        if ($partida["intentos"] <= 6) {
             $victorias++;
             $indiceIntento = $partida["intentos"] - 1;
             $adivinadas[$indiceIntento]++;
@@ -379,8 +359,7 @@ do{
             $palabraElegida = "";
             $palabraValida = false;
             $coleccionPalabras = cargarColeccionPalabras();
-            echo "Ingresa tu nombre: ";
-            $jugador = trim(fgets(STDIN));
+            $jugador = solicitarJugador();
             while (!$palabraValida) {
                 $cantPalabras = count($coleccionPalabras);
                 echo "Seleccione su palabra de juego ingresando un número del 1 al " . ($cantPalabras -1). ": ";
@@ -396,8 +375,7 @@ do{
             cargarPartidas($partida);
             break;
         case 2:
-            echo "Ingresa tu nombre: ";
-            $jugador = trim(fgets(STDIN));
+            $jugador = solicitarJugador();
             $coleccionPalabras = cargarColeccionPalabras();
             $palabraAleatoria = "";
             do { 
@@ -416,8 +394,7 @@ do{
             break;
         case 4: 
             $partidasJugadas = cargarPartidas(); 
-            echo "Ingrese el nombre del jugador: ";
-            $jugador = trim(fgets(STDIN));
+            $jugador = solicitarJugador();
             $partidasJugador = $partidasJugadas[$jugador]["partidas"];
             $indiceGanada = primeraPartidaGanada($partidasJugadas, $jugador);
             if ($indiceGanada !== -1) { 
@@ -431,25 +408,23 @@ do{
             }
             break;
         case 5:
-            case 5:
-                $partidasJugadas = cargarPartidas();
-                echo "Ingrese el nombre del jugador: ";
-                $jugador = trim(fgets(STDIN)); 
-                $resumen = obtenerResumenJugador($partidasJugadas, $jugador);
-                if ($resumen["partidas"] == 0) {
-                    echo "El jugador " . $jugador . " no tiene partidas jugadas.\n";
-                } else { 
-                    echo "**************************************************\n";
-                    echo "Jugador: " . $resumen["jugador"] . "\n";
-                    echo "Partidas: " . $resumen["partidas"] . "\n";
-                    echo "Puntaje Total: " . $resumen["puntajeTotal"] . "\n";
-                    echo "Victorias: " . $resumen["victorias"] . "\n";
-                    echo "Porcentaje Victorias: " . $resumen["porcentajeVictorias"] . "%\n";
-                    echo "Adivinadas:\n";
-                    for ($i = 1; $i <= 6; $i++) {
-                        echo "Intento " . $i . ": " . $resumen["adivinadas"][$i - 1] . "\n";
-                    }
-                    echo "**************************************************\n";
+            $partidasJugadas = cargarPartidas();
+            $jugador = solicitarJugador(); 
+            $resumen = obtenerResumenJugador($partidasJugadas, $jugador);
+            if ($resumen["partidas"] == 0) {
+                echo "El jugador " . $jugador . " no tiene partidas jugadas.\n";
+            } else { 
+                echo "**************************************************\n";
+                echo "Jugador: " . $resumen["jugador"] . "\n";
+                echo "Partidas: " . $resumen["partidas"] . "\n";
+                echo "Puntaje Total: " . $resumen["puntajeTotal"] . "\n";
+                echo "Victorias: " . $resumen["victorias"] . "\n";
+                echo "Porcentaje Victorias: " . $resumen["porcentajeVictorias"] . "%\n";
+                echo "Adivinadas:\n";
+                for ($i = 1; $i <= 6; $i++) {
+                    echo "Intento " . $i . ": " . $resumen["adivinadas"][$i - 1] . "\n";
+                }
+                echo "**************************************************\n";
                 }
             break;
         case 6:
