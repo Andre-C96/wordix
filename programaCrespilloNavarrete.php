@@ -25,6 +25,9 @@ include_once("wordix.php");
 // ARRAY_RAND: Seleccionar una o más claves aleatorias de un array.
 // ARRAY_PUSH: Inserta uno o más elementos al final de un array.
 // ARRAY_KAYS: Devuelve todas las claves de un array o un subconjunto de claves de un array.
+// ISSET: Determina si una variable está definida y no es null.
+// STATIC: definir métodos y propiedades estáticos. static también se puede usar para definir variables estáticas y para enlaces estáticos en tiempo de ejecución.
+
 
 
 /**
@@ -73,6 +76,7 @@ function cargarPartidas ($partidaJugada = null){
     //array $partida
     //STRING $jugadorActual
     //array $arrayPartidasJugadas
+    //INT $partidaActual
     static $arrayPartidasJugadas = [];
 
     if($partidaJugada !== null){
@@ -125,7 +129,7 @@ function verificarNoRepetirPalabra ($jugador, $palabraAJugar, $partidasJugadas){
             $i++; 
         }
     }
-        
+
     return $encontrado;
 }
  
@@ -243,7 +247,7 @@ function obtenerResumenJugador($coleccionPartidas, $nombreJugador) {
     for ($j = 0; $j < $cantPartidasJugador; $j++) {
         $partida = $partidasJugadasJugador[$j];
         $puntajeTotal += $partida["puntaje"];
-        if ($partida["intentos"] <= 6) {
+        if ($partida["intentos"] <= 6 && $partida["intentos"] > 0) {
             $victorias++;
             $indiceIntento = $partida["intentos"] - 1;
             $adivinadas[$indiceIntento]++;
@@ -279,7 +283,7 @@ function obtenerResumenJugador($coleccionPartidas, $nombreJugador) {
  * @return string 
  */
 function solicitarJugador() {
-    $nombre = "";
+    //STRING $nombre
     do {
         echo "Ingrese el nombre del jugador (debe comenzar con una letra): ";
         $nombre = trim(fgets(STDIN)); 
@@ -347,7 +351,6 @@ function mostrarPartidasOrdenadas($coleccionPartidas) {
 
 
 //Inicialización de variables:
-$almacenarPartidas = [];
 $partidasJugadas = cargarPartidas();
 $coleccionPalabras = cargarColeccionPalabras();
 
@@ -356,9 +359,8 @@ do{
     $opcion = seleccionarOpcion();
     switch ($opcion){
         case 1: 
-            $palabraElegida = "";
-            $palabraValida = false;
             $coleccionPalabras = cargarColeccionPalabras();
+            $palabraValida = false;
             $jugador = solicitarJugador();
             while (!$palabraValida) {
                 $cantPalabras = count($coleccionPalabras);
@@ -370,9 +372,9 @@ do{
                 } else {
                     $palabraValida = true;
                 }
-            }
+                }
             $partida = jugarWordix($palabraElegida, $jugador);
-            cargarPartidas($partida);
+            $partidasJugadas = cargarPartidas($partida);
             break;
         case 2:
             $jugador = solicitarJugador();
@@ -383,11 +385,15 @@ do{
                 $palabraAleatoria = $coleccionPalabras[$aleatoria];
             } while (verificarNoRepetirPalabra($jugador, $palabraAleatoria, $partidasJugadas));
             $partida = jugarWordix($palabraAleatoria, $jugador);
-            cargarPartidas($partida);
+            $partidasJugadas = cargarPartidas($partida);
             break;
         case 3: 
             $partidasJugadas = cargarPartidas();
-            $cantPartidas = (count($partidasJugadas));
+            $cantPartidas = 0;
+            for ($i = 0; $i < count($partidasJugadas); $i++) {
+                $jugadorActual = array_keys($partidasJugadas)[$i];
+                $cantPartidas += count($partidasJugadas[$jugadorActual]["partidas"]);
+            }
             echo "Ingrese el número de partida (1-" . $cantPartidas . "): ";
             $numeroPartida = trim(fgets(STDIN));
             $mostrarPartida =  mostrarPartida($numeroPartida);
