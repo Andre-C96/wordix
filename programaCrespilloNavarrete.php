@@ -405,10 +405,18 @@ function compararPartidas ($a,$b){
  * @param array $coleccionPartidas 
  */
 function mostrarPartidasOrdenadas($coleccionPartidas) {
-    
-    uasort($coleccionPartidas, "compararPartidas");
+    $partidas = [];
+    $i = 0;
+    for ($i = 0; $i < count($coleccionPartidas); $i++) {
+        $jugador = array_keys($coleccionPartidas)[$i];
+        for ($j = 0; $j < count($coleccionPartidas[$jugador]['partidas']); $j++) {
+            $partida = $coleccionPartidas[$jugador]['partidas'][$j];
+            $partidas[] = $partida;
+        }
+    }
+    uasort($partidas, "compararPartidas");
     echo "Listado de partidas ordenadas por jugador y por palabra:\n";
-    print_r($coleccionPartidas);
+    print_r($partidas);
 }
 
 
