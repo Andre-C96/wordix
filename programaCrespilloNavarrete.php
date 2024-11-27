@@ -77,7 +77,98 @@ function cargarPartidas ($partidaJugada = null){
     //STRING $jugadorActual
     //array $arrayPartidasJugadas
     //INT $partidaActual
+    //ARRAY $partidasIniciales
+    //BOOL $existePartida
     static $arrayPartidasJugadas = [];
+
+    $partidasIniciales = [
+        [
+            "jugador" => "juan",
+            "intentos" => 3,
+            "palabra" => "CASAS",
+            "puntaje" => 7
+        ],
+        [
+            "jugador" => "maria",
+            "intentos" => 2,
+            "palabra" => "PERRO",
+            "puntaje" => 9
+        ],
+        [
+            "jugador" => "juan",
+            "intentos" => 4,
+            "palabra" => "GATOS",
+            "puntaje" => 11
+        ],
+        [
+            "jugador" => "ana",
+            "intentos" => 1,
+            "palabra" => "CLAVO",
+            "puntaje" => 15
+        ],
+        [
+            "jugador" => "pedro",
+            "intentos" => 2,
+            "palabra" => "SALSA",
+            "puntaje" => 5
+        ],
+        [
+            "jugador" => "maria",
+            "intentos" => 2,
+            "palabra" => "QUESO",
+            "puntaje" => 5
+        ],
+        [
+            "jugador" => "juan",
+            "intentos" => 3,
+            "palabra" => "RASGO",
+            "puntaje" => 9
+        ],
+        [
+            "jugador" => "ana",
+            "intentos" => 1,
+            "palabra" => "YUYOS",
+            "puntaje" => 17
+        ],
+        [
+            "jugador" => "pedro",
+            "intentos" => 4,
+            "palabra" => "NAVES",
+            "puntaje" => 7
+        ],
+        [
+            "jugador" => "maria",
+            "intentos" => 3,
+            "palabra" => "MESAS",
+            "puntaje" => 4
+        ]
+    ];
+
+    for ($i = 0; $i < count($partidasIniciales); $i++) {
+        $partida = $partidasIniciales[$i];
+        $jugadorActual = $partida["jugador"];
+        $palabraActual = $partida["palabra"];
+        if (!isset($arrayPartidasJugadas[$jugadorActual])){
+            $arrayPartidasJugadas[$jugadorActual] = [
+                "partidas" => [
+                    $partida
+                ]
+            ];
+        } else {
+            $existePartida = false;
+            $cantPartidas = count($arrayPartidasJugadas[$jugadorActual]["partidas"]);
+            for ($j = 0; $j < $cantPartidas; $j++) {
+                $partidaExistente = $arrayPartidasJugadas[$jugadorActual]["partidas"][$j];
+                if ($partidaExistente["palabra"] == $palabraActual) {
+                    $existePartida = true;
+                    break;
+                }
+            }
+            if (!$existePartida) {
+                $arrayPartidasJugadas[$jugadorActual]["partidas"][] = $partida;
+            }
+        }
+    }
 
     if($partidaJugada !== null){
         $partida = $partidaJugada;
@@ -252,7 +343,6 @@ function obtenerResumenJugador($coleccionPartidas, $nombreJugador) {
             $indiceIntento = $partida["intentos"] - 1;
             $adivinadas[$indiceIntento]++;
         }
-        $j++;
     }
     if ($cantPartidasJugador > 0){
         $porcentajeVictorias = (($victorias*100)/ $cantPartidasJugador);
