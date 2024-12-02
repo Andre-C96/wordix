@@ -141,7 +141,7 @@ function mostrarPartida($num, $partidas) {
 
 /** Está función agrega una palabra a la colección de palabras del juego
  * @param array $coleccionPalabras
- * @return array
+ * @return STRING
 */
 function agregarPalabras ($coleccionPalabras){
     //STRING $palabra
@@ -375,8 +375,6 @@ do{
             break;
         case 2:
             $jugador = solicitarJugador();
-            $coleccionPalabras = cargarColeccionPalabras();
-            $palabraAleatoria = "";
             do { 
                 $aleatoria = array_rand($coleccionPalabras);
                 $palabraAleatoria = $coleccionPalabras[$aleatoria];
